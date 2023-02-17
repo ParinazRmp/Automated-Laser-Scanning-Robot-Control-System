@@ -30,8 +30,18 @@ The program allows you to control the robot's movement, including increasing or 
 <!-- INSTALLING_and_RUNNING -->
 ## Installing_and_running
 
-ROS is an open-source, meta-operating system for your robot. 
-Here is a guide for installing ROS on your machine.<iframe Here="https://wiki.ros.org/noetic/Installation/Ubuntu" width="500" height="500" frameborder="0"></iframe>
+ROS is an open-source, meta-operating system for your robot.
+
+[Here](https://wiki.ros.org/noetic/Installation/Ubuntu) is a guide for installing ROS on your machine.
+
+
+* <h3>Prerequisites :<h3>
+```bash
+mkdir -p RT1P/src
+cd RT1P
+catkin_make
+
+```
 
 
 ```bash
