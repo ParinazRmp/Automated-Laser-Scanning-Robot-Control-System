@@ -35,27 +35,52 @@ ROS is an open-source, meta-operating system for your robot.
 [Here](https://wiki.ros.org/noetic/Installation/Ubuntu) is a guide for installing ROS on your machine.
 
 
-* <h3>Prerequisites :<h3>
+* <h3>Creating a workspace for catkin: <h3>
 ```bash
 mkdir -p RT1P/src
 cd RT1P
 catkin_make
-
+```
+* <h4>Running the Project: <h4>
+```bash
+cd src
+```
+```bash
+git clone https://github.com/ParinazRmp/Automated-Laser-Scanning-Robot-Control-System.git
+```
+```bash
+cd RT1P
+```
+```bash
+catkin_make
+```
+	
+Open five terminals, and run ROS core on the first one:
+	
+```bash
+roscore
+```
+Run the following command in the second terminal to visualize the map:
+	
+```bash
+rosrun second_assignment_node robot_controller
+```
+Run the service node in the third one
+	
+```bash
+rosrun second_assignment_server server
 ```
 
+To control the robot through the user interface, run the robot controller node:
+	
+```bash
+rosrun second_assignment_node robot_controller
+```
+	
+Run the robot node in the last step
 
 ```bash
-$ sudo apt-get install python-dev python-pip python-pygame python-yaml
-```
-
-``` bash
-$ sudo pip install pypybox2d
-```
-
-Once the dependencies are installed, get inside the directory on the shell. To run the game, run the command:
-
-```bash
-$ python2 run.py assignment.py
+rosrun second_assignment_node robot
 ```
 
 
