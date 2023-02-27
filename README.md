@@ -73,6 +73,8 @@ roslaunch second_assignment second_assignment.launch
 - Initially, a code was implemented to enable the robot to move autonomously within the environment. This involved creating a publisher and subscriber to change the robot's behavior based on its feedback.
 - In the second step, a user interface was developed to allow keyboard inputs and modify the robot's velocity within the circuit. These changes were computed using a service that established communication between all nodes.
 
+
+### First Step	
 In the first step of the project, we created an autonomous controller for the robot. 
 
 After starting the environment, we used the command `rostopic list` to check all running nodes. Then, we had to find the structure of each node of interest, such as `/base_scan` which provides data about the environment, and `/cmd_vel` which provides data about the velocity of the robot. We obtained the structure by using `rostopic info /base_scan` and `rostopic info /cmd_vel`.
@@ -96,6 +98,35 @@ From the structure, it is clear that all fields of linear and angular velocity a
     - An angular velocity > 0 turns the robot left
 - Finally, if the robot has a clear path without any nearby obstacles, it can adjust its velocity according to the menu provided through the *UI_node*.
 
+### Second Step
+
+In the second step, we implemented a controller that allows changing the velocity by inserting inputs from the keyboard. At the beginning of the project, there was only one node, the *circuitcontroller_node*, responsible for moving the robot. In this second step, we added two more nodes: one for the service, called *service_node*, and one for the user interface, called *UI_node*.
+
+The general structure is:
+
+- *circuitcontroller_node*: makes the robot move;
+- *UI_node*: takes the keyboard inputs;
+- *service_node*: reads the value passed by the UI and determines, according to a switch case, the value to pass for changing the velocity.
+
+All the files described above are put inside the *src* folder, as is usually done. Moreover, for the correct implementation of the program, there are still two files to be defined:
+
+- the type of service;
+- (optionally) a type of message to pass the value, which is nothing more than a format for casting the value passed.
+- 
+
+The general path to change the velocity is:
+
+- UI_node
+- service_node
+- UI_node
+- control_node
+
+The program's communication structure can be found here:
+
+
+![rosgraph](https://user-images.githubusercontent.com/94115975/221691781-e18807ed-5675-4067-9fed-122956ce7e87.png)
+	
+
 <!-- Simulation_and_Results -->
 ## Simulation_and_Results
 
@@ -104,10 +135,9 @@ https://user-images.githubusercontent.com/94115975/218223479-2e771eb1-105f-4806-
 <!-- Robot_Movement_Improvement_Proposal -->
 ## Robot_Movement_Improvement_Proposal
 
-The following report will outline two potential improvements to the current code. These modifications aim to enhance the robot's movement and make it smoother and more efficient.
+Possible improvements to the robot's performance include:
 
-Online control: The first improvement involves implementing online control to the robot's movement. The goal of this modification is to keep the robot centered and to prevent it from hitting walls while seeking the silver tokens. To achieve this, the robot will be designed to always see where the silver tokens are and maintain the center of the line.
+- Adding the ability to follow walls and avoid zigzag driving in certain situations.
+- Optimizing the linear-to-angular velocity ratio during turns to prevent collisions.
 
-Additional controls: The second improvement involves adding more controls to the code to handle different shapes of mazes. As the current code is straightforward and meets the requirements set by the professor, additional controls may be necessary to address any potential issues with the robot's movement in mazes with different shapes such as zig-zag or wave-shaped walls. These additional controls will help the robot navigate the maze more efficiently and effectively.
-
-In conclusion, these two improvements have the potential to significantly enhance the robot's movement and make it smoother and more efficient. The implementation of online control and additional controls will allow the robot to better navigate the maze and perform its tasks more effectively.
+Despite the potential for improvement, the robot's current performance is already satisfactory. A reasonable velocity multiplier (e.g., 2 or 1.5) allows the robot to complete multiple laps around the circuit without issue. Using excessively high multipliers (e.g., 3 or 2.5) increases the risk of wall collisions. Additional requirements may be necessary to improve the robot's movements, particularly at higher speeds.
