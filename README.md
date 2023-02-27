@@ -58,7 +58,7 @@ cd RT1P
 catkin_make
 ```
 	
-I provided a file named ```bash.launch ```to enable the automatic running of the program.
+I provided a file named ```.launch ```to enable the automatic running of the program.
 ```
 roslaunch second_assignment second_assignment.launch
 ```
