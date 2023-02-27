@@ -49,9 +49,7 @@ catkin_make
 ```bash
 git clone https://github.com/ParinazRmp/Automated-Laser-Scanning-Robot-Control-System.git
 ```
-```bash
-cd RT1P
-```
+
 ```bash
 catkin_make
 ```
