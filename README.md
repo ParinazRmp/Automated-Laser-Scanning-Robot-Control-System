@@ -45,9 +45,7 @@ cd RT1P
 catkin_make
 ```
 * <h4>Running the Project: <h4>
-```bash
-cd src
-```
+
 ```bash
 git clone https://github.com/ParinazRmp/Automated-Laser-Scanning-Robot-Control-System.git
 ```
@@ -71,7 +69,7 @@ roslaunch second_assignment second_assignment.launch
 ### An overview of the project's steps
 
 - Initially, a code was implemented to enable the robot to move autonomously within the environment. This involved creating a publisher and subscriber to change the robot's behavior based on its feedback.
-- In the second step, a user interface was developed to allow keyboard inputs and modify the robot's velocity within the circuit. These changes were computed using a service that established communication between all nodes.
+- In the second step, a user interface was developed to allow keyboard inputs and modify the robot's velocity. These changes were computed using a service that established communication between all nodes.
 
 
 ### First Step	
@@ -79,15 +77,11 @@ In the first step of the project, we created an autonomous controller for the ro
 
 After starting the environment, we used the command `rostopic list` to check all running nodes. Then, we had to find the structure of each node of interest, such as `/base_scan` which provides data about the environment, and `/cmd_vel` which provides data about the velocity of the robot. We obtained the structure by using `rostopic info /base_scan` and `rostopic info /cmd_vel`.
 
-At the end of this process, we also checked the structure of the data using the commands `rosmsg show sensor_msgs/LaserScan` and `rosmsg show geometry_msgs/Twist`.
+The `/base_scan` topic is the publisher, which provides data acquired using the laser in this case. 
+The `/cmd_vel` is a subscriber, which computes the velocity of the robot and allows it to move. 
 
-It is evident that the `/base_scan` topic is the publisher, which provides data acquired using the laser in this case. 
+According to the problem we are working on, the linear velocity can be on the *x* or *y-*axis, while the angular velocity can be on the *z-*axis only. Velocity on other axes, in this specific case, does not have any physical reason.
 
-On the contrary, the `/cmd_vel` is a subscriber, which computes the velocity of the robot and allows it to move. 
-
-From the structure, it is clear that all fields of linear and angular velocity are among the three axes. According to the problem we are working on, the linear velocity can be on the *x* or *y-*axis, while the angular velocity can be on the *z-*axis only. Velocity on other axes, in this specific case, does not have any physical reason.
-
-#### To determine the action the robot needs to take, it follows a simple logic:
 
 - First, it takes all the sensors provided by the `/base_scan` topic and divides them into three main categories of equal dimensions:
     - Right array: sensors 0 to 109
@@ -102,7 +96,7 @@ From the structure, it is clear that all fields of linear and angular velocity a
 
 In the second step, we implemented a controller that allows changing the velocity by inserting inputs from the keyboard. At the beginning of the project, there was only one node, the *circuitcontroller_node*, responsible for moving the robot. In this second step, we added two more nodes: one for the service, called *service_node*, and one for the user interface, called *UI_node*.
 
-The general structure is:
+The general structure is as follows:
 
 - *circuitcontroller_node*: makes the robot move;
 - *UI_node*: takes the keyboard inputs;
