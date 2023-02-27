@@ -47,7 +47,7 @@ catkin_make
 * <h4>Running the Project: <h4>
 
 ```bash
-git clone https://github.com/ParinazRmp/Automated-Laser-Scanning-Robot-Control-System.git
+git clone https://github.com/ParinazRmp/Simulation-of-ROS-robot-with-laser-scanner.git
 ```
 
 ```bash
