@@ -72,8 +72,29 @@ roslaunch second_assignment second_assignment.launch
 
 - Initially, a code was implemented to enable the robot to move autonomously within the environment. This involved creating a publisher and subscriber to change the robot's behavior based on its feedback.
 - In the second step, a user interface was developed to allow keyboard inputs and modify the robot's velocity within the circuit. These changes were computed using a service that established communication between all nodes.
-	
 
+In the first step of the project, we created an autonomous controller for the robot. 
+
+After starting the environment, we used the command `rostopic list` to check all running nodes. Then, we had to find the structure of each node of interest, such as `/base_scan` which provides data about the environment, and `/cmd_vel` which provides data about the velocity of the robot. We obtained the structure by using `rostopic info /base_scan` and `rostopic info /cmd_vel`.
+
+At the end of this process, we also checked the structure of the data using the commands `rosmsg show sensor_msgs/LaserScan` and `rosmsg show geometry_msgs/Twist`.
+
+It is evident that the `/base_scan` topic is the publisher, which provides data acquired using the laser in this case. 
+
+On the contrary, the `/cmd_vel` is a subscriber, which computes the velocity of the robot and allows it to move. 
+
+From the structure, it is clear that all fields of linear and angular velocity are among the three axes. According to the problem we are working on, the linear velocity can be on the *x* or *y-*axis, while the angular velocity can be on the *z-*axis only. Velocity on other axes, in this specific case, does not have any physical reason.
+
+#### To determine the action the robot needs to take, it follows a simple logic:
+
+- First, it takes all the sensors provided by the `/base_scan` topic and divides them into three main categories of equal dimensions:
+    - Right array: sensors 0 to 109
+    - Front array: sensors 304 to 414
+    - Left array: sensors 609 to 719
+- It then compares the distance on the right and left sides and makes the robot turn in the direction of the wall that is farthest away by changing its velocities. During a turn, the robot uses a small linear velocity on the *x* axis and an angular velocity on the *z* axis. Specifically:
+    - An angular velocity < 0 turns the robot right
+    - An angular velocity > 0 turns the robot left
+- Finally, if the robot has a clear path without any nearby obstacles, it can adjust its velocity according to the menu provided through the *UI_node*.
 
 <!-- Simulation_and_Results -->
 ## Simulation_and_Results
