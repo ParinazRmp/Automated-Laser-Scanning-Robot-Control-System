@@ -9,7 +9,6 @@ This is a ROS-based robot simulation moving autonomously in a circular path equi
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#installing_and_running">Installing_and_running</a></li>
     <li><a href="#Project_Steps">Project_Steps</a></li>
-    <li><a href="#Flowchart">Flowchart</a></li>
     <li><a href="#Simulation_and_Results">Simulation_and_Results</a></li>
     <li><a href="#Robot_Movement_Improvement_Proposal">Robot_Movement_Improvement_Proposal</a></li>
   </ol>
