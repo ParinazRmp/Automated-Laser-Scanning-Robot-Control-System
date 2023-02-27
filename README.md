@@ -28,6 +28,7 @@ To complete this assignment, you will need to create a program using ROS and C++
 The program should also include a service that provides a user interface for inserting different commands to change the behavior of the robot.
 
 
+![Parinaz_RT1_2](https://user-images.githubusercontent.com/94115975/221712303-d00f2c30-7d34-4101-bba4-17691c1b3166.png)
 
 
 <!-- INSTALLING_and_RUNNING -->
@@ -122,7 +123,9 @@ The program's communication structure can be found here:
 <!-- Simulation_and_Results -->
 ## Simulation_and_Results
 
-https://user-images.githubusercontent.com/94115975/218223479-2e771eb1-105f-4806-9850-aedf24090665.mp4
+
+https://user-images.githubusercontent.com/94115975/221712352-89fa571e-49fd-4545-9a03-cb988b8c3c3b.mp4
+
 
 <!-- Robot_Movement_Improvement_Proposal -->
 ## Robot_Movement_Improvement_Proposal
