@@ -8,7 +8,7 @@ This is a ROS-based robot simulation moving autonomously in a circular path equi
   <ol>
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#installing_and_running">Installing_and_running</a></li>
-    <li><a href="#Robot_API">Robot_API</a></li>
+    <li><a href="#Project_Steps">Project_Steps</a></li>
     <li><a href="#Flowchart">Flowchart</a></li>
     <li><a href="#Simulation_and_Results">Simulation_and_Results</a></li>
     <li><a href="#Robot_Movement_Improvement_Proposal">Robot_Movement_Improvement_Proposal</a></li>
@@ -23,6 +23,9 @@ This is a ROS-based robot simulation moving autonomously in a circular path equi
 This project involves simulating a robot's movement along a circular path using the Robot Operating System (ROS). 
 The robot has a laser scanner that detects obstacles in front of it and provides distance measurements. 
 The program allows you to control the robot's movement, including increasing or decreasing its linear velocity, stopping it, and resetting it to its starting position.
+To complete this assignment, you will need to create a program using ROS and C++ that allows a robot to move around a circuit. 
+
+The program should also include a service that provides a user interface for inserting different commands to change the behavior of the robot.
 
 
 
@@ -55,252 +58,20 @@ cd RT1P
 catkin_make
 ```
 	
-Open five terminals, and run ROS core on the first one:
-	
-```bash
-roscore
+I provided a file named ```bash.launch ```to enable the automatic running of the program.
 ```
-Run the following command in the second terminal to visualize the map:
-	
-```bash
-rosrun second_assignment_node robot_controller
-```
-Run the service node in the third one
-	
-```bash
-rosrun second_assignment_server server
-```
-
-To control the robot through the user interface, run the robot controller node:
-	
-```bash
-rosrun second_assignment_node robot_controller
-```
-	
-Run the robot node in the last step
-
-```bash
-rosrun second_assignment_node robot
+roslaunch second_assignment second_assignment.launch
 ```
 
 
 
-<!-- Robot_API -->
-## Robot_API
+<!-- Project_Steps -->
+## Project_Steps
 
-The API for controlling a simulated robot is designed to be as similar as possible to the [SR API](https://www.studentrobotics.org/docs/programming/sr/cheat_sheet).
+### An overview of the project's steps
 
-### Motors ###
-
-The simulated robot has two motors configured for skid steering, connected to a two-output [Motor Board](https://studentrobotics.org/docs/kit/motor_board). The left motor is connected to output `0` and the right motor to output `1`.
-
-The Motor Board API is identical to [that of the SR API](https://studentrobotics.org/docs/programming/sr/motors/), except that motor boards cannot be addressed by serial number. So, to turn on the spot at one quarter of full power, one might write the following:
-
-```python
-R.motors[0].m0.power = 25
-R.motors[0].m1.power = -25
-```
-
-### The Grabber ###
-
-The robot is equipped with a grabber, capable of picking up a token which is in front of the robot and within 0.4 metres of the robot's centre. To pick up a token, call the `R.grab` method:
-
-```python
-success = R.grab()
-```
-
-The `R.grab` function returns `True` if a token was successfully picked up, or `False` otherwise. If the robot is already holding a token, it will throw an `AlreadyHoldingSomethingException`.
-
-To drop the token, call the `R.release` method.
-
-Cable-tie flails are not implemented.
-
-### Vision ###
-
-To help the robot find tokens and navigate, each token has markers stuck to it, as does each wall. The `R.see` method returns a list of all the markers the robot can see, as `Marker` objects. The robot can only see markers which it is facing towards.
-
-Each `Marker` object has the following attributes:
-
-* `info`: a `MarkerInfo` object describing the marker itself. Has the following attributes:
-  * `code`: the numeric code of the marker.
-  * `marker_type`: the type of object the marker is attached to (either `MARKER_TOKEN_GOLD`, `MARKER_TOKEN_SILVER` or `MARKER_ARENA`).
-  * `offset`: offset of the numeric code of the marker from the lowest numbered marker of its type. For example, token number 3 has the code 43, but offset 3.
-  * `size`: the size that the marker would be in the real game, for compatibility with the SR API.
-* `centre`: the location of the marker in polar coordinates, as a `PolarCoord` object. Has the following attributes:
-  * `length`: the distance from the centre of the robot to the object (in metres).
-  * `rot_y`: rotation about the Y axis in degrees.
-* `dist`: an alias for `centre.length`
-* `res`: the value of the `res` parameter of `R.see`, for compatibility with the SR API.
-* `rot_y`: an alias for `centre.rot_y`
-* `timestamp`: the time at which the marker was seen (when `R.see` was called).
-
-
-<!-- Flowchart  -->
-## Flowchart
-<img width="1042" alt="Flowchart - Parinaz" src="https://user-images.githubusercontent.com/94115975/218449054-29d4a989-1b23-4be3-b515-2c92f093829d.png">
- 
-
-<!-- Main Functions -->
-## Main_Functions
-
-* <h3>Drive motors :<h3>
-```python
-def drive(speed , seconds):
-	R.motors[0].m0.power = speed
-	R.motors[0].m1.power = speed 
-	time.sleep(seconds) 
-	R.motors[0].m0.power = 0
-	R.motors[0].m1.power = 0
-```
-
- 
-1. With the *speed* setting, the robot's linear velocity can be defined.
-2. *Seconds* indicates how long the speed will last.
-
-
-* <h3>Turn :<h3>
-```python
-def turn(speed , seconds):
-	R.motors[0].m0.power = speed 
-	R.motors[0].m1.power = -speed 
-	time.sleep(seconds)
-	R.motors[0].m0.power =0
-	R.motors[0].m1.power =0
-```
-
-The "Turn on Axis" Function provides the capability for the robot to rotate around its central point. It takes two arguments, "speed" and "seconds", that control the behavior of the robot during the rotation.
-
-The "speed" argument defines the velocity of the motors, with one motor moving in a positive direction and the other in a negative direction to create the rotation. The "seconds" argument specifies the duration of the rotation, indicating the time interval for which the rotation should take place.
-
-This function does not produce any returns and is used to give the robot the ability to turn on its axis.
-
-
-* <h3>find golden tokens:<h3>
-
-```python
-def find_golden_token(distance=0.9, angle=45):
-	dist = distance
-	for token in R.see():
-		
-		if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD and -angle < token.rot_y < angle:
-			
-			dist = token.dist
-		
-		rot_y = token.rot_y
-		
-	if dist == distance:
-		
-		return False
-	
-	else:
-		
-		return True 
-```
-Function detects closest golden box in a cone-shaped area. The cone has a default angle of 90 degrees (-45 to 45) and a maximum distance of 0.9. 
-
-It stops the robot and helps avoid walls. 
-
-Arguments "distance" and "angle" can be set. Returns True if no golden boxes detected, False if detected.
-
-
-* <h3>find Silver tokens:<h3>
-
-```python
-dist = 1.2
-	
-	for token in R.see():
-	
-		if -70 < token.rot_y < 70:
-		
-			if token.info.marker_type is MARKER_TOKEN_SILVER and token.dist < dist:
-			
-				if gold_in_between(token.dist, token.rot_y):
-				
-					print("Looking for a new Silver!!")
-					
-				else:
-					
-					dist = token.dist 
-					
-					rot_y = token.rot_y
-	if dist == 1.2:
-	
-		return -1, -1
-		
-	else:
-		
-		return dist, rot_y
-```
-
-The function ``` def find_silver_token() ``` has the capability to identify the nearest silver token within a 140-degree cone, with a maximum range of 1.2 meters. 
-
-The function utilizes the ``` def gold_in_between(dist, rot_y) ``` method to overlook any tokens that may be blocked by obstacles such as walls. 
-
-The primary objective of this function is to locate and approach silver tokens. 
-
-The output of this function includes the distance to the closest silver token and the angle in degrees between the robot and the token. If no silver tokens are detected or if they are obstructed by golden boxes, the function returns -1.
-											       
-The ``` def find_silver_token() ``` function has two sub-functions: ``` def gold_in_between(dist, rot_y) ```, and ``` def Routine()```.								       
-  - ``` def gold_in_between(dist, rot_y) ``` checks for the presence of golden boxes between the robot and the silver tokens it is searching for. It takes the distance and angle of the detected silver token as input and returns False if there are no golden boxes in between, or True if there are. 
-  
-  - ``` def Routine()```is called if ``` def gold_in_between(dist, rot_y) ``` returns False, and it carries out the sequence of actions to approach, grab, turn, release, and turn away from the silver token. This function only activates if the robot is close enough to the silver token, with a distance threshold of 0.4. If the robot is too far from the silver token, it continues to drive.
-  
-
-* <h3>Rotation :<h3>
-
-```python
-def Rotation():
-	dist_right = 7
-	dist_left = 7
-	
-	for token in R.see():
-	
-		if 75 < token.rot_y < 105:
-		
-			if token.info.marker_type is MARKER_TOKEN_GOLD and token.dist < dist_right:
-				
-				dist_right = token.dist
-				
-		if -105 < token.rot_y < -75:
-		
-			if token.info.marker_type is MARKER_TOKEN_GOLD and token.dist < dist_left:
-			
-				dist_left = token.dist 
-				
-	if dist_right > dist_left:
-	
-		while find_golden_token(1,45.5):
-		
-			turn(10,0.1)	
-	else:
-	
-		while find_golden_token(1,45.5):
-			
-			turn(-10,0.1)
-```
-The described function serves to calculate the distance between the robot and the nearest golden box to its right and left, each at an angle of 30 degrees. The range for the right golden box falls between 75 and 105 degrees, while for the left it falls between -105 and -75 degrees.
-
-In order to locate the golden box, the robot will rotate towards the furthest golden box until it no longer detects any golden box in a cone with a 91-degree field of view and a distance of 1 unit in front of it. The angle and distance of the cone can be adjusted by passing the arguments to the function ``` find_golden_token(..,..) ```.
-
-Thanks to this feature, the robot will always turn counter-clockwise when searching for the golden box.
-	
-	
-
-* <h3>main() :<h3>
-	
-The main goal of this function is to allow the robot to continuously perform its tasks. It follows these steps:
-
-1. Look for golden boxes. The robot's behavior changes based on its proximity to a golden box or a silver token.
-
-2. Check if a silver token is within the robot's field of vision.
-
-3. Take action based on the result of step 2:
-	- If the robot detects a silver token, it moves towards it to grab it. This is done through checking "if rot_y != -1", as find_silver_token() returns -1 if no silver tokens are found.
-	- If the robot doesn't detect a silver token, it continues driving straight ahead.
-
-		
-	
-4. If the robot is close to a golden box, it will call the ``` def Rotation(): ``` function to turn counter-clockwise with respect to its path.
+- Initially, a code was implemented to enable the robot to move autonomously within the environment. This involved creating a publisher and subscriber to change the robot's behavior based on its feedback.
+- In the second step, a user interface was developed to allow keyboard inputs and modify the robot's velocity within the circuit. These changes were computed using a service that established communication between all nodes.
 	
 
 
